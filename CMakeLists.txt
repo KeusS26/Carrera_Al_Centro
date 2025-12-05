@@ -3,4 +3,8 @@ project(Carrera_Al_Centro)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(Carrera_Al_Centro main.cpp)
+add_executable(Carrera_Al_Centro main.cpp
+        Jugador.cpp
+        Jugador.h
+        Dado.cpp
+        Dado.h)
