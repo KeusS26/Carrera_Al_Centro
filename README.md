@@ -70,3 +70,6 @@ El diagrama UML del proyecto incluye las clases:
 - **Casilla** (base)
 - **CasillaEspecial** (derivada)
 - **Jugador**
+
+## Diagrama UML
+![UML del proyecto](UML_Proyecto.png)
