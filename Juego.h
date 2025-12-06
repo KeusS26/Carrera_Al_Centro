@@ -6,15 +6,39 @@
 #define CARRERA_AL_CENTRO_JUEGO_H
 //Creado Por Juan // 06 diciembre 2025
 
-#include "tablero.h"
-#include "jugador.h"
-#include "dado.h"
-#include "vector"
-#include "string"
+#include "Tablero.h"
+#include "Jugador.h"
+#include "Dado.h"
+#include <vector>
+#include <string>
 
 class Juego {
-    private:
-    tablero* tablero;
+private:
+    Tablero* tablero;
+    std::vector<Jugador*> jugadores;
+    int pvInicial;
+    int turnoActual;
+
+public:
+    Juego();
+
+
+    void menuPrincipal();
+
+private:
+    void iniciarNuevoJuego();
+    void cargarPartida();
+    void guardarPartida();
+
+    void crearJugadores(int cantidad);
+    void crearTableroSegunDificultad(int opcion);
+
+    void cicloDeTurnos();
+    void turnoJugador(Jugador* jugador);
+
+    void moverJugador(Jugador* jugador, int pasos, Direccion dir);
+
+    bool hayGanador() const;
 
 };
 

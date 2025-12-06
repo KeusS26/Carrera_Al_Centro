@@ -22,7 +22,7 @@ public:
     bool esEspecial() override;
 
     ///Logica para crear la casilla
-    void activar(Jugador *jugador) override;
+    void activar(Jugador *jugador, int pvInicial) override;
 
     ///Consultar el tipo
     TipoEspecial getTipo();

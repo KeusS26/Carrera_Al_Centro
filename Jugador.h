@@ -12,11 +12,11 @@ enum class Direccion {ARRIBA,ABAJO,IZQUIERDA,DERECHA};
 class Jugador {
 private:
     string nombre;
-    int idJugador;
-    int pv;
-    int fila;
-    int columna;
-    bool eliminado;
+    int idJugador{};
+    int pv{};
+    int fila{};
+    int columna{};
+    bool eliminado{};
 public:
     /// Constructor
     Jugador();
@@ -27,11 +27,9 @@ public:
     void agregarPv(int cantidad);
     bool estaEliminado();
 
-    ///Movimiento
-    void Mover(Direccion dir,int pasos);
-
     ///Setter
     void setPosicion(int fila, int Columna);
+    void setPv(int pv);
 
     ///Getter
     string getNombre();

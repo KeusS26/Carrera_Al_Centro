@@ -1,13 +1,14 @@
 #include <iostream>
+#include <memory>
 using namespace std;
+#include "Juego.h"
 
 
 // SI SE PUEDE MANIPULAR ESTEBAN ATT: JUAN
 
 
 int main() {
-    do {
-
-    } while (true);
+    Juego juego;
+    juego.menuPrincipal();
     return 0;
 }

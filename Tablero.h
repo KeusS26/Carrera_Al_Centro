@@ -4,9 +4,11 @@
 #ifndef CARRERA_AL_CENTRO_TABLERO_H
 #define CARRERA_AL_CENTRO_TABLERO_H
 #include "Casilla.h"
+#include <vector>
 #include "CasillaNormal.h"
 #include "CasillaEspecial.h"
 #include <cstdlib>
+
 
 class Tablero {
 private:
@@ -19,13 +21,15 @@ private:
 
 public:
     ///Constructor
+    int getColumnas();
+    int getFilas();
     Tablero(int filas, int columnas);
 
     ///Accceso a Casillas
     Casilla* getCasilla(int filas,int columnas);
 
     ///Mostrar tablero en consola
-    void mostrar();
+    void mostrar(const std::vector<Jugador*>& jugadores);
 
 private:
     /// Metodos Privados

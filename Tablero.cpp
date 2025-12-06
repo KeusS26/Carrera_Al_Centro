@@ -29,6 +29,15 @@ Tablero::Tablero(int filas, int columnas) {
 
 }
 
+
+void Tablero::generarCasillas() {
+    for (int i = 0; i < filas; i++) {
+        for (int j = 0; j < columnas; j++) {
+            matriz[i][j] = new CasillaNormal(i, j);
+        }
+    }
+}
+
 void Tablero::generarCasillasEspecialesAleatorias() {
     int generadas = 0;
 
@@ -53,26 +62,52 @@ void Tablero::generarCasillasEspecialesAleatorias() {
     }
 }
 
-Casilla* Tablero::getCasilla(int filas, int columnas){
-    if (filas < 0 || filas >= filas || columnas < 0 || columnas >= columnas) {
+Casilla* Tablero::getCasilla(int f, int c) {
+    if (f < 0 || f >= filas || c < 0 || c >= columnas)
         return nullptr;
-    }
-    return matriz[filas][columnas];
+    return matriz[f][c];
 }
 
-void Tablero::mostrar() {
+
+void Tablero::mostrar(const std::vector<Jugador*>& jugadores) {
     for (int i = 0; i < filas; ++i) {
         for (int j = 0; j < columnas; ++j) {
-            if (matriz[i][j] -> esEspecial()) {
-                if (matriz[i][j] -> fueDescubierta()) {
-                    std::cout << "[E]";
+
+            bool hayJugador = false;
+
+            // 🔍 Revisar si hay jugador en esta casilla
+            for (auto jugador : jugadores) {
+                if (!jugador->estaEliminado() &&
+                    jugador->getFila() == i &&
+                    jugador->getColumna() == j) {
+
+                    std::cout << "[J]";
+                    hayJugador = true;
+                    break;
+                    }
+            }
+
+            // Si no hay jugador, mostrar la casilla
+            if (!hayJugador) {
+                if (matriz[i][j]->esEspecial()) {
+                    if (matriz[i][j]->fueDescubierta()) {
+                        std::cout << "[E]";
+                    } else {
+                        std::cout << "[?]";
+                    }
                 } else {
-                    std::cout << "[?]";
+                    std::cout << "[.]";
                 }
-            } else {
-                std::cout << "[.]";
             }
         }
         std::cout << std::endl;
     }
+}
+
+int Tablero::getColumnas() {
+    return columnas;
+}
+
+int Tablero::getFilas() {
+    return filas;
 }

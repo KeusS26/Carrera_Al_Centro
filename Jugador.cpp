@@ -6,14 +6,9 @@
 using namespace std;
 /// Constructor
 Jugador::Jugador(){}
-Jugador::Jugador(string nombre, int idJugador) {
-    this -> nombre = nombre;
-    this -> idJugador = idJugador;
-    this -> pv = 0;
-    this -> fila = 0;
-    this -> columna = 0;
-    this -> eliminado = false;
-}
+
+Jugador::Jugador(string n, int pvIni)
+    : nombre(n), pv(pvIni), fila(0), columna(0) {}
 
 /// Moetodos de Vida
 void Jugador::restarPV(int cantidad) {
@@ -37,37 +32,6 @@ bool Jugador::estaEliminado() {
     return eliminado;
 }
 
-///Movimiento
-void Jugador::Mover(Direccion dir,int pasos) {
-    if (this -> eliminado) {
-        return;
-    }
-    for (int i = 0; i < pasos; i++) {
-        if (pv <= 0) {
-            eliminado = true;
-            break;
-        }
-        switch (dir) {
-            case Direccion::ARRIBA:
-                fila--;
-                break;
-            case Direccion::ABAJO:
-                fila++;
-                break;
-            case Direccion::IZQUIERDA:
-                columna--;
-                break;
-            case Direccion::DERECHA:
-                columna++;
-                break;
-        }
-        pv--;
-        if (pv <= 0) {
-            eliminado = true;
-            break;
-        }
-    }
-}
 
 ///Setter
 void Jugador::setPosicion(int fila, int Columna) {
@@ -98,4 +62,8 @@ int Jugador::getColumna() {
 
 bool Jugador::getEliminado() {
     return this -> eliminado;
+}
+
+void Jugador::setPv(int pv) {
+    this -> pv = pv;
 }

@@ -23,6 +23,10 @@ bool Casilla::fueDescubierta() {
     return this -> descubierta;
 }
 
+void Casilla::marcarDescubierta() {
+    descubierta = true;
+}
+
 bool Casilla::esEspecial() {
     return false; ///Por defecto no es especial la casiila normal
 }

@@ -15,6 +15,6 @@ bool CasillaNormal::esEspecial() {
 }
 
 ///No hace nada al activar
-void CasillaNormal::activar(Jugador *jugador) {
+void CasillaNormal::activar(Jugador *jugador, int pvInicial) {
     /// Aqui no hace nada cuando el jugador cae en ella
 }

@@ -15,7 +15,7 @@ public:
     bool esEspecial() override;
 
     ///No hace nada al activar
-    void activar(Jugador *jugador) override;
+    void activar(Jugador *jugador, int pvInicial) override;
 };
 
 

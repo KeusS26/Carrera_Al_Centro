@@ -15,4 +15,6 @@ add_executable(Carrera_Al_Centro main.cpp
         CasillaEspecial.cpp
         CasillaEspecial.h
         Tablero.cpp
-        Tablero.h)
+        Tablero.h
+        Juego.cpp
+        Juego.h)

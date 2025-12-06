@@ -19,13 +19,11 @@ TipoEspecial CasillaEspecial::getTipo() {
     return tipo;
 }
 
-void CasillaEspecial::activar(Jugador *jugador) {
+void CasillaEspecial::activar(Jugador *jugador, int pvInicial) {
     ///Marca la casilla Como descubierta
     this -> marcarDescubierta();
 
-    int maxValor = jugador -> getPv();
-
-    Dado dado = Dado(maxValor);
+    Dado dado = Dado(pvInicial);
     int d = dado.Lanzar();
 
     std::cout << "Casilla especial activada en ("

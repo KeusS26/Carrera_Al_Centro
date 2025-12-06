@@ -23,7 +23,8 @@ public:
 
     ///Identificacion y los metodos sobre escritos
     virtual bool esEspecial();
-    virtual void activar(Jugador* jugador) = 0;
+    virtual void activar(Jugador* jugador, int pvInicial) = 0;
+
 
 };
 
