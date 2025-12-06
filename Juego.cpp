@@ -7,6 +7,15 @@
 #include <fstream>
 #include <cstdlib>
 
+std::string nombreDireccion(Direccion d) {
+    switch (d) {
+        case Direccion::ARRIBA: return "ARRIBA";
+        case Direccion::ABAJO: return "ABAJO";
+        case Direccion::IZQUIERDA: return "IZQUIERDA";
+        case Direccion::DERECHA: return "DERECHA";
+        default: return "DESCONOCIDA";
+    }
+}
 
 Juego::Juego() {
     tablero = nullptr;
@@ -100,12 +109,28 @@ void Juego::cicloDeTurnos() {
 
     while (!hayGanador()) {
         Jugador* j = jugadores[turnoActual];
-
         if (!j->estaEliminado())
             turnoJugador(j);
 
         turnoActual = (turnoActual + 1) % jugadores.size();
     }
+
+    //  Mostrar ganador
+    Jugador* ganador = obtenerGanador();
+    if (ganador) {
+        std::cout << "\n=============================\n";
+        std::cout << " EL GANADOR ES: " << ganador->getNombre() << " 🎉\n";
+        std::cout << "PV restantes: " << ganador->getPv() << "\n";
+        std::cout << "=============================\n";
+    }
+}
+
+Jugador* Juego::obtenerGanador(){
+    for (auto j : jugadores) {
+        if (!j->estaEliminado())
+            return j;
+    }
+    return nullptr;
 }
 
 void Juego::turnoJugador(Jugador* jugador) {
@@ -117,65 +142,119 @@ void Juego::turnoJugador(Jugador* jugador) {
     std::cout << "1) Lanzar Dados\n";
     std::cout << "2) Guardar partida\n";
     std::cout << "3) Rendirse\n";
+
     int op;
     std::cin >> op;
 
-    if (op == 2) {
+    if (op == 1) {
+        moverJugador(jugador);
+    }
+    else if (op == 2) {
         guardarPartida();
-        return;
     }
-
-    if (op == 3) {
-        jugador->restarPV(jugador->getPv()); // queda eliminado
-        return;
+    else if (op == 3) {
+        jugador->restarPV(jugador->getPv()); // se elimina
     }
-
-    Dado dado(6);
-    int pasos = dado.Lanzar();
-
-    std::cout << "Pasos obtenidos: " << pasos << "\n";
-    std::cout << "Direccion (0=ARRIBA,1=ABAJO,2=IZQ,3=DER): ";
-    int d;
-    std::cin >> d;
-
-    moverJugador(jugador, pasos, (Direccion)d);
 }
 
-void Juego::moverJugador(Jugador* jugador, int pasos, Direccion dir) {
+
+void Juego::moverJugador(Jugador* jugador) {
+
+    struct Opcion {
+        Direccion dir;
+        int pasos;
+    };
+
+    std::vector<Opcion> opciones;
+
+    // Dados: uno por dirección
+    Dado dado(6);
+    int dArriba    = dado.Lanzar();
+    int dAbajo     = dado.Lanzar();
+    int dIzquierda = dado.Lanzar();
+    int dDerecha   = dado.Lanzar();
 
     int f = jugador->getFila();
     int c = jugador->getColumna();
+    int pv = jugador->getPv();
 
-    switch (dir) {
-        case Direccion::ARRIBA:    f -= pasos; break;
-        case Direccion::ABAJO:     f += pasos; break;
-        case Direccion::IZQUIERDA: c -= pasos; break;
-        case Direccion::DERECHA:   c += pasos; break;
-    }
+    // ARRIBA
+    if (dArriba < pv && f - dArriba >= 0)
+        opciones.push_back({Direccion::ARRIBA, dArriba});
 
-    // ✅ limitar al tablero
-    if (f < 0) f = 0;
-    if (c < 0) c = 0;
-    if (f >= tablero->getFilas()) f = tablero->getFilas() - 1;
-    if (c >= tablero->getColumnas()) c = tablero->getColumnas() - 1;
+    // ABAJO
+    if (dAbajo < pv && f + dAbajo < tablero->getFilas())
+        opciones.push_back({Direccion::ABAJO, dAbajo});
 
-    // ✅ RESTAR PV POR MOVIMIENTO
-    jugador->restarPV(pasos);
+    // IZQUIERDA
+    if (dIzquierda < pv && c - dIzquierda >= 0)
+        opciones.push_back({Direccion::IZQUIERDA, dIzquierda});
 
-    if (jugador->estaEliminado()) {
-        std::cout << jugador->getNombre() << " se quedo sin PV.\n";
+    // DERECHA
+    if (dDerecha < pv && c + dDerecha < tablero->getColumnas())
+        opciones.push_back({Direccion::DERECHA, dDerecha});
+
+    // Regla 2: ninguna válida
+    if (opciones.empty()) {
+        std::cout << "No hay movimientos validos. Pierdes el turno.\n";
         return;
     }
 
-    Casilla* destino = tablero->getCasilla(f, c);
-    if (!destino) {
-        std::cout << "Movimiento invalido.\n";
-        return;
+    // Mostrar opciones
+    std::cout << "Movimientos validos:\n";
+    for (size_t i = 0; i < opciones.size(); i++) {
+        std::cout << i << ") ";
+
+        switch (opciones[i].dir) {
+            case Direccion::ARRIBA:    std::cout << "ARRIBA"; break;
+            case Direccion::ABAJO:     std::cout << "ABAJO"; break;
+            case Direccion::IZQUIERDA: std::cout << "IZQUIERDA"; break;
+            case Direccion::DERECHA:   std::cout << "DERECHA"; break;
+        }
+
+        std::cout << " (" << opciones[i].pasos << " pasos)\n";
     }
 
-    jugador->setPosicion(f, c);
-    destino->activar(jugador, pvInicial);
+    // Regla 3: solo una opción
+    int eleccion = 0;
+    if (opciones.size() > 1) {
+        std::cin >> eleccion;
+    }
+
+    Direccion dir = opciones[eleccion].dir;
+    int pasos = opciones[eleccion].pasos;
+
+    // Ejecutar movimiento paso a paso
+    for (int i = 0; i < pasos; i++) {
+
+        if (jugador->getPv() <= 0) {
+            return;
+        }
+
+        int nf = jugador->getFila();
+        int nc = jugador->getColumna();
+
+        switch (dir) {
+            case Direccion::ARRIBA:    nf--; break;
+            case Direccion::ABAJO:     nf++; break;
+            case Direccion::IZQUIERDA: nc--; break;
+            case Direccion::DERECHA:   nc++; break;
+        }
+
+        jugador->setPosicion(nf, nc);
+        jugador->restarPV(1);
+    }
+
+    // Activar casilla final
+    Casilla* destino = tablero->getCasilla(
+        jugador->getFila(),
+        jugador->getColumna()
+    );
+
+    if (destino)
+        destino->activar(jugador, pvInicial);
 }
+
 
 
 bool Juego::hayGanador() const {
@@ -191,6 +270,11 @@ bool Juego::hayGanador() const {
 void Juego::guardarPartida() {
     std::ofstream file("partidas.txt");
 
+    if (!file.is_open()) {
+        std::cout << "Error al abrir el archivo para guardar.\n";
+        return;
+    }
+
     file << jugadores.size() << "\n";
     file << pvInicial << "\n";
 
@@ -201,11 +285,14 @@ void Juego::guardarPartida() {
              << j->getColumna() << "\n";
     }
 
+    file.close(); //  MUY IMPORTANTE
     std::cout << "Partida guardada.\n";
 }
 
+
 void Juego::cargarPartida() {
     std::ifstream file("partidas.txt");
+
     if (!file) {
         std::cout << "No hay partida guardada.\n";
         return;
@@ -215,24 +302,25 @@ void Juego::cargarPartida() {
     file >> cant;
     file >> pvInicial;
 
-    crearTableroSegunDificultad(1); // provisional
+    crearTableroSegunDificultad(1); // luego se puede mejorar
 
     for (auto j : jugadores) delete j;
     jugadores.clear();
-
 
     for (int i = 0; i < cant; i++) {
         std::string name;
         int pv, f, c;
         file >> name >> pv >> f >> c;
-
         Jugador* j = new Jugador(name, pvInicial);
         j->setPv(pv);
         j->setPosicion(f, c);
-
         jugadores.push_back(j);
     }
 
+    file.close();
     std::cout << "Partida cargada.\n";
 
+    cicloDeTurnos(); //  IMPORTANTE
 }
+
+

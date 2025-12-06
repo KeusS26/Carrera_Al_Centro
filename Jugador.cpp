@@ -28,6 +28,7 @@ void Jugador::agregarPv(int cantidad) {
     pv += cantidad;
 }
 
+
 bool Jugador::estaEliminado() {
     return eliminado;
 }

@@ -35,8 +35,10 @@ private:
 
     void cicloDeTurnos();
     void turnoJugador(Jugador* jugador);
+    Jugador* obtenerGanador();
 
-    void moverJugador(Jugador* jugador, int pasos, Direccion dir);
+
+    void moverJugador(Jugador* jugador);
 
     bool hayGanador() const;
 

@@ -38,6 +38,8 @@ public:
     int getFila();
     int getColumna();
     bool getEliminado();
+
+
 };
 
 
