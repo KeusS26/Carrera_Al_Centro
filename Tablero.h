@@ -11,17 +11,18 @@
 class Tablero {
 private:
     int filas;
-    int columna;
+    int columnas;
     int cantidadEspeciales;
 
     //Matriz dinamica de Punteros a Casilla
     Casilla*** matriz;
+
 public:
     ///Constructor
-    Tablero(int fila, int columna);
+    Tablero(int filas, int columnas);
 
     ///Accceso a Casillas
-    Casilla* getCasilla(int fila,int columna);
+    Casilla* getCasilla(int filas,int columnas);
 
     ///Mostrar tablero en consola
     void mostrar();
