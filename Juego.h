@@ -6,7 +6,16 @@
 #define CARRERA_AL_CENTRO_JUEGO_H
 //Creado Por Juan // 06 diciembre 2025
 
+#include "tablero.h"
+#include "jugador.h"
+#include "dado.h"
+#include "vector"
+#include "string"
+
 class Juego {
+    private:
+    tablero* tablero;
+
 };
 
 
